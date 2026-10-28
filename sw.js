@@ -1,4 +1,5 @@
-const C='iub-v1',F=['./','index.html','style.css','app.js','manifest.json','logo.png','icon-192.png','icon-512.png','card-front.png','card-back.png','transport1.png','transport2.png'];
+const C='iub-v4',F=["b1.jpg", "b2.jpg", "b3.jpg", "card-back.png", "card-front.png", "i-adm.png", "i-ann.png", "i-bell.png", "i-card.png", "i-chat.png", "i-clr.png", "i-course.png", "i-doc.png", "i-entry.png", "i-gear.png", "i-roll.png", "i-schol.png", "i-soc.png", "i-tt.png", "i-veh.png", "i-vouch.png", "icon-192.png", "icon-512.png", "logo.png", "transport1.png", "transport2.png", "./", "index.html", "style.css", "app.js", "manifest.json"];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(F)));self.skipWaiting()});
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x))))));
-self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))));self.clients.claim()});
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;
+e.respondWith(caches.match(e.request,{ignoreSearch:true}).then(r=>r||fetch(e.request).then(n=>{if(n&&(n.ok||n.type==='opaque')){const k=n.clone();caches.open(C).then(c=>c.put(e.request,k))}return n}).catch(()=>caches.match('index.html'))))});
