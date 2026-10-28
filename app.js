@@ -58,8 +58,10 @@ $('#view').innerHTML=`<div class="hd"><img class="av" src="${LS.iubPhoto}" alt="
 ql();sl(0);tm=setInterval(()=>sl((slide+1)%4),3000)}
 function sl(i){slide=i;const x=$('#trk');if(!x)return;x.style.transform=`translateX(-${i*100}%)`;document.querySelectorAll('.dots i').forEach((d,j)=>d.classList.toggle('on',j==i))}
 function ql(){const q=($('#q').value||'').toLowerCase(),a=L.filter(l=>(l[1]+t(l[1])).toLowerCase().includes(q)),v=q||more?a:a.slice(0,6);
-$('#ql').innerHTML=v.map(l=>{const n=t(l[1]);return`<button class="q" onclick="nav('p:${l[0]}')"><img src="i-${l[0]}.png" alt=""><span style="font-size:calc(var(--u)*${Math.min(24,225/n.length).toFixed(1)})">${n}</span></button>`}).join('');
+$('#ql').innerHTML=v.map(l=>{const n=t(l[1]);return`<button class="q" onclick="portal()"><img src="i-${l[0]}.png" alt=""><span style="font-size:calc(var(--u)*${Math.min(24,225/n.length).toFixed(1)})">${n}</span></button>`}).join('');
 $('#mb').style.display=q?'none':'block';$('#mb').textContent=t(more?'Show Less':'Show More')}
+const PORTAL='https://my-iub-edu-pk.github.io/portal/';
+function portal(){if(!navigator.onLine)return snack('Internet is required to open the portal.');window.open(PORTAL,'_blank')}
 function mic(){const S=window.SpeechRecognition||window.webkitSpeechRecognition;if(!S)return snack('Voice search is not supported on this device');const r=new S();r.onresult=e=>{$('#q').value=e.results[0][0].transcript;ql()};r.start()}
 function page(k){clearInterval(tm);const p=P[k],nm=k=='transport'?'Transport Schedule':(L.find(l=>l[0]==k)||[])[1];let h=`<div class="pt">${t(nm)}</div>`;
 if(k=='card')h+=`<div class="cards"><img src="card-front.png" alt=""><img src="card-back.png" alt=""></div><div class="card" style="margin-top:22px"><table class="det">${CARD.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table></div>`;
