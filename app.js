@@ -28,6 +28,7 @@ $('#dim').classList.toggle('on',ov);$('#set').classList.toggle('on',ov);
 if(v!='home'&&!ov)clearInterval(tm);
 if(v=='login'){B.className=cls('lg');show('login');$('#un').value=LS.iubName||'';setPv(LS.iubPhoto)}
 else if(v=='profile'){B.className=cls('pf');show('prof');pend=0;$('#pp').src=LS.iubPhoto;$('#nn').value=LS.iubName||''}
+else if(v=='portal'){B.className=cls('hm');show('app');$('#view').innerHTML=`<iframe class="fr" src="${PORTAL}"></iframe>`}
 else{B.className=cls('hm');show('app');if(ov){if(cur!='home')home();settings()}else if(v=='home'){if(cur!='settings')home()}else page(v.slice(2))}
 $('#tc').content=LS.iubDark?'#232323':'#f7f7f7';cur=v}
 function setPv(s){$('#pv').innerHTML=s?`<img src="${s}" alt="">`:CAM}
@@ -50,18 +51,18 @@ function tgStyle(){LS.iubStyle=LS.iubStyle==2?1:2;home();settings()}
 const IS='<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg>',IM='<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>';
 const BN=[['b1','#0b1f45','Admission<br>Last Date',''],['b2','#e8b23a','Fee<br>Structure','f'],['b3','#0b1f45','Merit<br>List',''],['b1','#102a5c','Entry Test<br>Schedule','']];
 function home(){clearInterval(tm);const h=new Date().getHours(),g=h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening',q0=($('#q')||{}).value||'';
-$('#view').innerHTML=`<div class="hd"><img class="av" src="${LS.iubPhoto}" alt=""><div class="hi">${t('Hi')} ${esc(LS.iubName)},<small>${t(g)}</small></div><button onclick="snack('No new notifications')"><img src="i-bell.png" alt=""></button><button onclick="nav('settings')"><img src="i-gear.png" alt=""></button></div>
+$('#view').innerHTML=`<div class="hd"><img class="av" src="${LS.iubPhoto}" alt="" onclick="openProf()"><div class="hi">${t('Hi')} ${esc(LS.iubName)},<small>${t(g)}</small></div><button onclick="snack('No new notifications')"><img src="i-bell.png" alt=""></button><button onclick="nav('settings')"><img src="i-gear.png" alt=""></button></div>
 <div class="sb"><input id="q" placeholder="${t('Search')}" oninput="ql()">${'<button onclick="$(\'#q\').focus()">'+IS+'</button><button onclick="mic()">'+IM+'</button>'}</div>
 <div class="car"><div class="trk" id="trk">${BN.map(b=>`<div class="sl ${b[3]}" style="--c:${b[1]}"><span>${b[2]}</span><img src="${b[0]}.jpg" alt=""></div>`).join('')}</div></div><div class="dots">${BN.map((b,i)=>`<i onclick="sl(${i})"></i>`).join('')}</div>
 <h4>${t('Quick Links')}</h4><div class="grid ${LS.iubStyle==2?'s2':''}" id="ql"></div><button class="more" id="mb" onclick="more^=1;ql()"></button>
-<h4>${t('Announcements')}</h4><div class="li" onclick="nav('p:ann')"><img src="i-ann.png" alt="">Test - 1</div>`;
+<h4>${t('Announcements')}</h4><div class="li" onclick="portal()"><img src="i-ann.png" alt="">Test - 1</div>`;
 ql();sl(0);tm=setInterval(()=>sl((slide+1)%4),3000)}
 function sl(i){slide=i;const x=$('#trk');if(!x)return;x.style.transform=`translateX(-${i*100}%)`;document.querySelectorAll('.dots i').forEach((d,j)=>d.classList.toggle('on',j==i))}
 function ql(){const q=($('#q').value||'').toLowerCase(),a=L.filter(l=>(l[1]+t(l[1])).toLowerCase().includes(q)),v=q||more?a:a.slice(0,6);
 $('#ql').innerHTML=v.map(l=>{const n=t(l[1]);return`<button class="q" onclick="portal()"><img src="i-${l[0]}.png" alt=""><span style="font-size:calc(var(--u)*${Math.min(24,225/n.length).toFixed(1)})">${n}</span></button>`}).join('');
 $('#mb').style.display=q?'none':'block';$('#mb').textContent=t(more?'Show Less':'Show More')}
 const PORTAL='https://my-iub-edu-pk.github.io/portal/';
-function portal(){if(!navigator.onLine)return snack('Internet is required to open the portal.');window.open(PORTAL,'_blank')}
+function portal(){if(!navigator.onLine)return snack('Internet is required to open the portal.');nav('portal')}
 function mic(){const S=window.SpeechRecognition||window.webkitSpeechRecognition;if(!S)return snack('Voice search is not supported on this device');const r=new S();r.onresult=e=>{$('#q').value=e.results[0][0].transcript;ql()};r.start()}
 function page(k){clearInterval(tm);const p=P[k],nm=k=='transport'?'Transport Schedule':(L.find(l=>l[0]==k)||[])[1];let h=`<div class="pt">${t(nm)}</div>`;
 if(k=='card')h+=`<div class="cards"><img src="card-front.png" alt=""><img src="card-back.png" alt=""></div><div class="card" style="margin-top:22px"><table class="det">${CARD.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table></div>`;
