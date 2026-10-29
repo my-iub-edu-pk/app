@@ -40,7 +40,7 @@ if(!OK(n))return snack('Username not found. Please enter a valid username.');
 LS.iubName=n;LS.iubIn=1;history.replaceState({v:'home'},'');cur='';render('home')}
 function openProf(){history.replaceState({v:'home'},'');nav('profile')}
 function saveProf(){const n=$('#nn').value.trim();if(!n)return snack('Please enter your name.');if(!OK(n))return snack('Username not found. Please enter a valid username.');if(pend)LS.iubPhoto=pend;LS.iubName=n;snack('Profile updated');history.back()}
-function signOut(){LS.iubIn='';history.replaceState({v:'login'},'');cur='';render('login')}
+function signOut(){LS.iubIn='';LS.iubName='';delete LS.iubPhoto;history.replaceState({v:'login'},'');cur='';render('login')}
 const SUN='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>',MOON='<svg width="22" height="22" viewBox="0 0 24 24" fill="#222"><path d="M20 14.5A8 8 0 019.5 4 8.5 8.5 0 1020 14.5z"/></svg>';
 function settings(){const d=B.classList.contains('dark'),u=LS.iubLang=='ur';
 $('#set').innerHTML=`<div class="sd"><h2>${t('Settings')}</h2>
