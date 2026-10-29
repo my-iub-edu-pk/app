@@ -17,14 +17,15 @@ doc:{k:'list',i:[['CNIC Copy','Not uploaded'],['Matric Certificate','Not uploade
 ann:{k:'list',i:[['Test - 1','Announcement',''],['Transport Schedule w.e.f. 16-09-2026','Tap to view','transport']]}};
 const CARD=[['Name','Saad Durrani'],['Registration no.','REG-2026-10896'],['Program','BS Cyber Security'],['Department','Cyber Security'],['Session','Fall 2026'],['Valid until','31 Jan 2027']];
 const PORTAL='https://my-iub-edu-pk.github.io/portal/',LMS='https://lms.iub.edu.pk/login/index.php';
+const OKU=['saaddurrani1','f25binse1m02207'],OK=n=>OKU.includes(String(n).trim().toLowerCase()),authed=()=>LS.iubIn&&OK(LS.iubName||'');
 let hl0,goS,cur,tm,more=0,slide=0,pend,ci,ox,oy,dg;
-const base=()=>LS.iubIn?'home':'login',cls=c=>c+(LS.iubDark?' dark':'');
+const base=()=>authed()?'home':'login',cls=c=>c+(LS.iubDark?' dark':'');
 const CAM='<svg viewBox="0 0 24 24"><g fill="none" stroke="#0f2a5c" stroke-width="1.6"><rect x="3" y="7" width="18" height="13" rx="2.5"/><circle cx="12" cy="13.5" r="3.8"/><path d="M8 7l1.5-2.5h5L16 7"/></g></svg>';
 function snack(m){const s=$('#snack');s.textContent=m;s.classList.add('on');clearTimeout(snack.t);snack.t=setTimeout(()=>s.classList.remove('on'),3200)}
 function nav(v){history.pushState({v},'');render(v)}
 addEventListener('popstate',e=>render(e.state&&e.state.v||base()));
 function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id==id))}
-function render(v){if(!LS.iubIn&&v!='login')v='login';const ov=v=='settings';
+function render(v){if(!authed()&&v!='login')v='login';const ov=v=='settings';
 $('#dim').classList.toggle('on',ov);$('#set').classList.toggle('on',ov);
 if(v!='home'&&!ov)clearInterval(tm);
 if(v=='login'){B.className=cls('lg');show('login');$('#un').value=LS.iubName||'';setPv(LS.iubPhoto)}
@@ -35,10 +36,11 @@ else{B.className=cls('hm'+(LS.iubStyle==2?' s2':''));show('app');if(ov){if(cur!=
 $('#tc').content=LS.iubDark?'#232323':'#f7f7f7';cur=v}
 function setPv(s){$('#pv').innerHTML=s?`<img src="${s}" alt="">`:CAM}
 function doLogin(){const n=$('#un').value.trim();if(!LS.iubPhoto||!n)return snack('Please upload a profile photo and enter your name to login.');
+if(!OK(n))return snack('Username not found. Please enter a valid username.');
 LS.iubName=n;LS.iubIn=1;history.replaceState({v:'home'},'');cur='';render('home')}
 function openProf(){history.replaceState({v:'home'},'');nav('profile')}
-function saveProf(){const n=$('#nn').value.trim();if(!n)return snack('Please enter your name.');if(pend)LS.iubPhoto=pend;LS.iubName=n;snack('Profile updated');history.back()}
-function signOut(){LS.iubIn='';LS.iubName='';history.replaceState({v:'login'},'');cur='';render('login')}
+function saveProf(){const n=$('#nn').value.trim();if(!n)return snack('Please enter your name.');if(!OK(n))return snack('Username not found. Please enter a valid username.');if(pend)LS.iubPhoto=pend;LS.iubName=n;snack('Profile updated');history.back()}
+function signOut(){LS.iubIn='';history.replaceState({v:'login'},'');cur='';render('login')}
 const SUN='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>',MOON='<svg width="22" height="22" viewBox="0 0 24 24" fill="#222"><path d="M20 14.5A8 8 0 019.5 4 8.5 8.5 0 1020 14.5z"/></svg>';
 function settings(){const d=B.classList.contains('dark'),u=LS.iubLang=='ur';
 $('#set').innerHTML=`<div class="sd"><h2>${t('Settings')}</h2>
@@ -81,7 +83,8 @@ function ql2(){const q=($('#q').value||'').toLowerCase();$('#g3').innerHTML=T2.f
 function openV(k){nav('x:'+k);hl0=history.length}
 const ib=(p,c)=>`<svg viewBox="0 0 24 24" fill="none" stroke="${c||'#fff'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 const ERR=`<div class="er"><div class="eu"><img src="logo-c.png" alt="">The Islamia University Of Bahawalpur</div><div class="e4"><svg viewBox="0 0 100 100"><g fill="none" stroke="#444" stroke-width="5" stroke-linecap="round"><circle cx="50" cy="50" r="44"/><rect x="32" y="46" width="36" height="26" rx="4"/><path d="M38 46v-8a12 12 0 0124 0v8M20 20l60 60"/></g></svg><div><b>403</b><i>Error</i></div></div><p>You don't have permission to access this page</p></div>`;
-function viewer(o){$('#view').innerHTML=`<div class="vwr"><div class="vh"><img src="logo-c.png" alt=""><b>${esc(o.t)}</b></div><div class="vb">${o.e?ERR:`<iframe id="fr2" data-u="${o.u}" src="${o.u}"></iframe>`}</div>
+function viewer(o){if(!o.e){$('#view').innerHTML=`<iframe class="fr" id="fr2" src="${o.u}"></iframe>`;return}
+$('#view').innerHTML=`<div class="vwr"><div class="vh"><img src="logo-c.png" alt=""><b>${esc(o.t)}</b></div><div class="vb">${o.e?ERR:`<iframe id="fr2" data-u="${o.u}" src="${o.u}"></iframe>`}</div>
 <div class="vt"><button onclick="history.back()">${ib('<path d="M15 5l-7 7 7 7"/>')}</button><button onclick="history.forward()">${ib('<path d="M9 5l7 7-7 7"/>')}</button><button onclick="vref()">${ib('<path d="M20 12a8 8 0 11-2.5-5.8M20 4v5h-5"/>')}</button><button onclick="vdsk()">${ib('<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 21h8M12 16v5"/>')}</button><button onclick="vx()">${ib('<path d="M5 5l14 14M19 5L5 19"/>','#d9a521')}</button></div></div>`}
 function vref(){const f=$('#fr2');if(!f)return;try{f.contentWindow.location.replace(f.dataset.u)}catch(e){f.src=f.dataset.u}}
 function vdsk(){const f=$('#fr2');if(!f)return;const b=f.parentNode,on=f.dataset.d!='1';f.dataset.d=on?'1':'0';if(on){const k=b.clientWidth/1100;f.style.cssText=`width:1100px;height:${b.clientHeight/k}px;transform:scale(${k});transform-origin:0 0`}else f.style.cssText=''}
